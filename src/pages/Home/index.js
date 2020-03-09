@@ -1,19 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
+import { formatPrice } from '../../utils/format';
+import api from '../../services/api';
 
 import { ProductList } from './styles';
 
 export default function Home() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(async () => {
+    const response = await api.get('products');
+
+    const data = response.data.map(product => ({
+      ...product,
+      priceFormatted: formatPrice(product.price),
+    }));
+
+    return setProducts(data);
+  }, []);
+
   return (
     <ProductList>
-      {Array.from(Array(9).keys()).map(item => (
-        <li>
-          <img
-            src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_detalhe1.jpg?ts=1571078789?resize=280:280"
-            alt="Tênis"
-          />
-          <strong>Tênis muito legal</strong>
-          <span>R$129,90</span>
+      {products.map(product => (
+        <li key={product.id}>
+          <img src={product.image} alt={product.title} />
+          <strong>{product.title}</strong>
+          <span>{product.priceFormatted}</span>
 
           <button type="button">
             <div>
