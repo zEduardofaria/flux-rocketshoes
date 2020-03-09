@@ -4,10 +4,13 @@ import {
   MdAddCircleOutline,
   MdDelete,
 } from 'react-icons/md';
+import { useSelector } from 'react-redux';
 
 import { Container, ProductTable, Total } from './styles';
 
-export default function Cart() {
+const Cart = () => {
+  // const carts = useSelector(({ cart }) => cart);
+
   return (
     <Container>
       <ProductTable>
@@ -65,4 +68,6 @@ export default function Cart() {
       </footer>
     </Container>
   );
-}
+};
+
+export default Cart;
