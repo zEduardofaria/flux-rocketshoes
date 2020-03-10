@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { formatPrice } from '../../utils/format';
 import api from '../../services/api';
+import * as CartActions from '../../store/modules/cart/actions';
 
 import { ProductList } from './styles';
 
@@ -27,10 +28,7 @@ const Home = () => {
   }, []);
 
   const HandleAddProduct = product => {
-    dispatch({
-      type: 'ADD_TO_CART',
-      product,
-    });
+    dispatch(CartActions.addToCart(product));
   };
 
   return (

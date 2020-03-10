@@ -1,17 +1,25 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MdRemoveCircleOutline,
   MdAddCircleOutline,
   MdDelete,
 } from 'react-icons/md';
-import { useSelector } from 'react-redux';
+import * as CartActions from '../../store/modules/cart/actions';
 
 import { Container, ProductTable, Total } from './styles';
 
 const Cart = () => {
   const carts = useSelector(({ cart }) => cart);
   const dispatch = useDispatch();
+
+  const increment = product => {
+    dispatch(CartActions.updateAmount(product.id, product.amount + 1));
+  };
+
+  const decrement = product => {
+    dispatch(CartActions.updateAmount(product.id, product.amount - 1));
+  };
 
   return (
     <Container>
@@ -37,11 +45,11 @@ const Cart = () => {
               </td>
               <td>
                 <div>
-                  <button type="button">
+                  <button type="button" onClick={() => decrement(product)}>
                     <MdRemoveCircleOutline size={20} color="#7159c1" />
                   </button>
                   <input type="number" readOnly value={product.amount} />
-                  <button type="button">
+                  <button type="button" onClick={() => increment(product)}>
                     <MdAddCircleOutline size={20} color="#7159c1" />
                   </button>
                 </div>
@@ -55,7 +63,7 @@ const Cart = () => {
                     size={20}
                     color="#7159c1"
                     onClick={() =>
-                      dispatch({ type: 'REMOVE_FROM_CART', id: product.id })
+                      dispatch(CartActions.removeFromCart(product.id))
                     }
                   />
                 </button>
