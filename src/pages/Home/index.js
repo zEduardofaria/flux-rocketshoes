@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { formatPrice } from '../../utils/format';
 import api from '../../services/api';
@@ -9,6 +9,13 @@ import * as CartActions from '../../store/modules/cart/actions';
 import { ProductList } from './styles';
 
 const Home = () => {
+  const productsAmount = useSelector(({ cart }) =>
+    cart.reduce((amount, product) => {
+      amount[product.id] = product.amount || 0;
+
+      return amount;
+    }, {})
+  );
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
 
@@ -27,8 +34,8 @@ const Home = () => {
     fetchData();
   }, []);
 
-  const HandleAddProduct = product => {
-    dispatch(CartActions.addToCart(product));
+  const HandleAddProduct = id => {
+    dispatch(CartActions.addToCartRequest(id));
   };
 
   return (
@@ -39,9 +46,10 @@ const Home = () => {
           <strong>{product.title}</strong>
           <span>{product.priceFormatted}</span>
 
-          <button type="button" onClick={() => HandleAddProduct(product)}>
+          <button type="button" onClick={() => HandleAddProduct(product.id)}>
             <div>
-              <MdAddShoppingCart size={16} color="#FFF" /> 3
+              <MdAddShoppingCart size={16} color="#FFF" />{' '}
+              {productsAmount[product.id] || 0}
             </div>
 
             <span>ADICIONAR AO CARRINHO</span>

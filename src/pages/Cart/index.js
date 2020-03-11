@@ -5,12 +5,25 @@ import {
   MdAddCircleOutline,
   MdDelete,
 } from 'react-icons/md';
-import * as CartActions from '../../store/modules/cart/actions';
 
+import * as CartActions from '../../store/modules/cart/actions';
+import { formatPrice } from '../../utils/format';
 import { Container, ProductTable, Total } from './styles';
 
 const Cart = () => {
-  const carts = useSelector(({ cart }) => cart);
+  const carts = useSelector(({ cart }) =>
+    cart.map(product => ({
+      ...product,
+      subtotal: formatPrice(product.price * product.amount),
+    }))
+  );
+  const totalPrice = formatPrice(
+    useSelector(({ cart }) =>
+      cart.reduce((total, product) => {
+        return total + product.price * product.amount;
+      }, 0)
+    )
+  );
   const dispatch = useDispatch();
 
   const increment = product => {
@@ -55,7 +68,7 @@ const Cart = () => {
                 </div>
               </td>
               <td>
-                <strong>R$258,80</strong>
+                <strong>{product.subtotal}</strong>
               </td>
               <td>
                 <button type="button">
@@ -78,7 +91,7 @@ const Cart = () => {
 
         <Total>
           <span>TOTAL</span>
-          <strong>R$1920,28</strong>
+          <strong>{totalPrice}</strong>
         </Total>
       </footer>
     </Container>
